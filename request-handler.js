@@ -9,12 +9,14 @@ class RequestHandler {
         this.app = express();
         this.portNumber = 3000;
         this.setup();
+
+        this.storage = new PropertiesStorage();
     }
 
-    async init() {
-        this.storage = new PropertiesStorage();
-        await this.storage.init();
-    }
+    // async init() {
+
+    //     //await this.storage.init();
+    // }
 
     setPort(portNumber) {
         this.portNumber = portNumber;

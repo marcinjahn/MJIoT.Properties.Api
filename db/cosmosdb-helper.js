@@ -1,4 +1,5 @@
 let DocumentDBClient = require('documentdb').DocumentClient;
+const uriFactory = require('documentdb').UriFactory;
 
 class CosmosDbHelper {
     constructor() {
@@ -120,6 +121,27 @@ class CosmosDbHelper {
         } else {
             callback(null, results[0]);
         }
+        });
+    }
+
+    queryCollection(query) {
+        console.log(`Querying collection through index:\n${this.collectionId}`);
+        let collectionUrl = uriFactory.createDocumentCollectionUri(this.databaseId, this.collectionId);
+        return new Promise((resolve, reject) => {
+            this.documentDbClient.queryDocuments(
+                collectionUrl,
+                query
+            ).toArray((err, results) => {
+                if (err) reject(err)
+                else {
+                    for (var queryResult of results) {
+                        let resultString = JSON.stringify(queryResult);
+                        console.log(`\tQuery returned ${resultString}`);
+                    }
+                    console.log();
+                    resolve(results);
+                }
+            });
         });
     }
 }

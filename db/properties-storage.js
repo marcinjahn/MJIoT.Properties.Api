@@ -8,36 +8,26 @@ class PropertiesStorage {
     }
 
     async init() {
-        await this.helper.init();
+        // await this.helper.init();
     }
 
-    getLastValue(deviceId, propertyName) {
-        let querySpec = {
-            query: 'SELECT * FROM root r WHERE r.DeviceId=@deviceId',
-            parameters: [
-                {
-                name: '@deviceId',
-                value: deviceId
-                }
-            ]
-        };
+    async getLastValue(deviceId, propertyName) {
+        var result = await this.helper.queryCollection(
+            `SELECT TOP 1 c.PropertyValue FROM c  
+            WHERE c.DeviceId=${deviceId} AND c.PropertyName="${propertyName}"
+            ORDER BY c.Timestamp DESC`);
 
-        return new Promise (function(resolve, reject) {
-            this.helper.find(querySpec, function(err, items) {
-                if (err) {
-                    throw err;
-                }
-                console.log("DONE");
-                console.log(items);
-                resolve(items);
-            });
-        });
-
-
+        if (result.length != 0)
+            return result[0].PropertyValue;
+        else
+            return null;
     }
 
-    getValues(deviceId, proeprtyName, startTime, endTime) {
-
+    async getValues(deviceId, propertyName, startTime, endTime) {
+        return await this.helper.queryCollection(
+            `SELECT c.PropertyValue, c.Timestamp FROM c 
+            WHERE c.DeviceId=${deviceId} AND c.PropertyName="${propertyName}" AND c.PropertyTime>=${startTime} AND c.PropertyTime<=${endTime}
+            ORDER BY c.Timestamp ASC`);
     }
 }
 
