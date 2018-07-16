@@ -24,10 +24,29 @@ class PropertiesStorage {
     }
 
     async getValues(deviceId, propertyName, startTime, endTime) {
-        return await this.helper.queryCollection(
-            `SELECT c.PropertyValue, c.Timestamp FROM c 
-            WHERE c.DeviceId=${deviceId} AND c.PropertyName="${propertyName}" AND c.PropertyTime>=${startTime} AND c.PropertyTime<=${endTime}
-            ORDER BY c.Timestamp ASC`);
+        this.helper.deleteDocs();
+        let startTimeQuery = "";
+        if (this.checkDate(startTime))
+            startTimeQuery = `AND c.Timestamp>="${startTime}"`;
+        let endTimeQuery = "";
+        if (this.checkDate(endTime))
+            endTimeQuery = `AND c.Timestamp<="${endTime}"`;   
+
+        let query = `SELECT c.PropertyValue, c.Timestamp FROM c 
+        WHERE c.DeviceId=${deviceId} AND c.PropertyName="${propertyName}" ${startTimeQuery} ${endTimeQuery}
+        ORDER BY c.Timestamp ASC`;
+        console.log(query);
+        var result = await this.helper.queryCollection(query);
+
+        return result;
+    }
+
+    checkDate(date) {
+        if (date == null)
+            return false;
+        if (Date.parse(date) != NaN)
+            return true;
+        return false;
     }
 }
 

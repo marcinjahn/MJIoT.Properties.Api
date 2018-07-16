@@ -3,9 +3,6 @@ const AuthHandler = require('./auth/auth-handler');
 const RequestHandler = require('./request-handler');
 
 
-
-
-
 let authHandler = new AuthHandler();
 let id = authHandler.getUserId();
 console.log(id);

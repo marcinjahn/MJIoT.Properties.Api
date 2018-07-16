@@ -31,7 +31,13 @@ class RequestHandler {
             let deviceId = req.params.deviceId;
             let propertyName = req.params.propertyName;
 
-            let data = await this.storage.getLastValue(deviceId, propertyName);
+            let data;
+            let startTime = req.query.startTime === undefined ? null : req.query.startTime;
+            let endTime = req.query.endTime === undefined ? null : req.query.endTime;
+            if (startTime != null || endTime != null)
+                data = await this.storage.getValues(deviceId, propertyName, startTime, endTime);
+            else 
+                data = await this.storage.getLastValue(deviceId, propertyName);
 
             res.send(data);
             // res.send(`You requested ${deviceId} and ${propertyName}`);
@@ -39,7 +45,6 @@ class RequestHandler {
             // res.status(404).send("Requested data is not available.");
         });
     }
-
 }
 
 module.exports = RequestHandler;

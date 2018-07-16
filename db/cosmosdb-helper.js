@@ -8,10 +8,10 @@ class CosmosDbHelper {
         this.collectionId = process.env.COLLECTION_ID;
     }
 
-    async init() {
-        this.db = await this.getDatabase(this.documentDbClient, this.databaseId, (data) => {console.log("database error: "); console.log(data);});
-        this.collection = await this.getCollection(this.documentDbClient, this.db._self, this.collectionId, (data) => {console.log("collection error: "); console.log(data);})
-    }
+    // async init() {
+    //     this.db = await this.getDatabase(this.documentDbClient, this.databaseId, (data) => {console.log("database error: "); console.log(data);});
+    //     this.collection = await this.getCollection(this.documentDbClient, this.db._self, this.collectionId, (data) => {console.log("collection error: "); console.log(data);})
+    // }
 
     getDatabase(callback) {
         let querySpec = {
@@ -125,7 +125,6 @@ class CosmosDbHelper {
     }
 
     queryCollection(query) {
-        console.log(`Querying collection through index:\n${this.collectionId}`);
         let collectionUrl = uriFactory.createDocumentCollectionUri(this.databaseId, this.collectionId);
         return new Promise((resolve, reject) => {
             this.documentDbClient.queryDocuments(
@@ -136,10 +135,23 @@ class CosmosDbHelper {
                 else {
                     for (var queryResult of results) {
                         let resultString = JSON.stringify(queryResult);
-                        console.log(`\tQuery returned ${resultString}`);
                     }
                     console.log();
                     resolve(results);
+                }
+            });
+        });
+    }
+    
+    //only for internal use!
+    deleteDoc(docId) {
+        console.log(`Deleting document:\n${docId}\n`);
+        let documentUrl = uriFactory.createDocumentUri(this.databaseId, this.collectionId, docId);
+        return new Promise((resolve, reject) => {
+            this.documentDbClient.deleteDocument(documentUrl, (err, result) => {
+                if (err) reject(err);
+                else {
+                    resolve(result);
                 }
             });
         });
