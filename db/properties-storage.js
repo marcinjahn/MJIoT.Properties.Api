@@ -1,4 +1,5 @@
-let CosmosDbHelper = require("./cosmosdb-helper");
+const CosmosDbHelper = require("./cosmosdb-helper");
+const escapeString = require('sql-escape-string');
 
 
 class PropertiesStorage {
@@ -7,15 +8,13 @@ class PropertiesStorage {
         
     }
 
-    async init() {
-        // await this.helper.init();
-    }
-
     async getLastValue(deviceId, propertyName) {
-        var result = await this.helper.queryCollection(
-            `SELECT TOP 1 c.PropertyValue FROM c  
-            WHERE c.DeviceId=${deviceId} AND c.PropertyName="${propertyName}"
-            ORDER BY c.Timestamp DESC`);
+        let query = `SELECT TOP 1 c.PropertyValue FROM c  
+        WHERE c.DeviceId=${deviceId} AND c.PropertyName="${propertyName}"
+        ORDER BY c.Timestamp DESC`
+        // if (!this.checkQuery(query))
+        //     throw "Possible SQL injection, request will not be handled.";
+        var result = await this.helper.queryCollection(query);
 
         if (result.length != 0)
             return result[0].PropertyValue;
@@ -34,7 +33,9 @@ class PropertiesStorage {
         let query = `SELECT c.PropertyValue, c.Timestamp FROM c 
         WHERE c.DeviceId=${deviceId} AND c.PropertyName="${propertyName}" ${startTimeQuery} ${endTimeQuery}
         ORDER BY c.Timestamp ASC`;
-        console.log(query);
+        // if (!this.checkQuery(query))
+        //     throw "Possible SQL injection, request will not be handled.";
+
         var result = await this.helper.queryCollection(query);
 
         return result;
@@ -47,6 +48,13 @@ class PropertiesStorage {
         if (!isNaN(Date.parse(date)))
             return true;
         return false;
+    }
+
+    checkQuery(query) {
+        let safeQuery = escapeString(query);
+        if (safeQuery != query)
+            return false
+        return true;
     }
 }
 
