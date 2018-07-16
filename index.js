@@ -1,7 +1,6 @@
+require('dotenv').config();
 const AuthHandler = require('./auth/auth-handler');
 const RequestHandler = require('./request-handler');
-let config = require("./config");
-
 
 async function Main() {
     let authHandler = new AuthHandler();

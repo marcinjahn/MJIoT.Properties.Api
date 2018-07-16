@@ -1,10 +1,9 @@
-let DocumentDBClient = require('documentdb').DocumentClient;
 let CosmosDbHelper = require("./cosmosdb-helper");
 
 
 class PropertiesStorage {
-    constructor(documentDbClient, databaseId, collectionId) {
-        this.helper = new CosmosDbHelper(documentDbClient, databaseId, collectionId);
+    constructor() {
+        this.helper = new CosmosDbHelper();
         
     }
 

@@ -1,22 +1,21 @@
 let DocumentDBClient = require('documentdb').DocumentClient;
 
 class CosmosDbHelper {
-    constructor(documentDbClient, databaseId, collectionId) {
-        this.documentDbClient = documentDbClient;
-        this.databaseId = databaseId;
-        this.collectionId = collectionId;
+    constructor() {
+        this.documentDbClient = new DocumentDBClient(process.env.HOST, { masterKey: process.env.AUTH_KEY });
+        this.databaseId = process.env.DATABASE_ID;
+        this.collectionId = process.env.COLLECTION_ID;
     }
 
     async init() {
         this.db = await this.getDatabase(this.documentDbClient, this.databaseId, (data) => {console.log("database error: "); console.log(data);});
-        debugger
         this.collection = await this.getCollection(this.documentDbClient, this.db._self, this.collectionId, (data) => {console.log("collection error: "); console.log(data);})
     }
 
-    getDatabase(client, databaseId, callback) {
+    getDatabase(callback) {
         let querySpec = {
         query: 'SELECT * FROM root r WHERE r.id = @id',
-        parameters: [{ name: '@id', value: databaseId }]
+        parameters: [{ name: '@id', value: this.databaseId }]
         };
     
 

@@ -12,10 +12,7 @@ class RequestHandler {
     }
 
     async init() {
-        let docDbClient = new DocumentDBClient(config.host, {
-            masterKey: config.authKey
-        });
-        this.storage = new PropertiesStorage(docDbClient, config.databaseId, config.collectionId);
+        this.storage = new PropertiesStorage();
         await this.storage.init();
     }
 
