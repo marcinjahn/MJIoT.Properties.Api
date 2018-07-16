@@ -24,7 +24,6 @@ class PropertiesStorage {
     }
 
     async getValues(deviceId, propertyName, startTime, endTime) {
-        this.helper.deleteDocs();
         let startTimeQuery = "";
         if (this.checkDate(startTime))
             startTimeQuery = `AND c.Timestamp>="${startTime}"`;
@@ -44,7 +43,8 @@ class PropertiesStorage {
     checkDate(date) {
         if (date == null)
             return false;
-        if (Date.parse(date) != NaN)
+        let result = Date.parse(date);
+        if (!isNaN(Date.parse(date)))
             return true;
         return false;
     }
