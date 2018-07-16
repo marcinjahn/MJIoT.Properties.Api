@@ -28,7 +28,7 @@ class Server {
         this.app.use(async (req, res, next) => {
             let isTokenValid = await this.authHandler.verifyToken(req.token);
             if (!isTokenValid)
-                res.status(401).send("The request's token is not correct. Request dropped");
+                res.status(401).send("The request's token is not correct. Request dropped.");
             next();
         });
 
@@ -51,10 +51,6 @@ class Server {
             catch(e) {
                 res.status(400).send("Request could not be handled.")
             }
-
-            // res.send(`You requested ${deviceId} and ${propertyName}`);
-
-            // res.status(404).send("Requested data is not available.");
         });
     }
 }
