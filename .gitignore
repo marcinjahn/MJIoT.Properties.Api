@@ -412,5 +412,6 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder
 .mfractor/
 
+.vscode/
 
 # End of https://www.gitignore.io/api/node,visualstudio,visualstudiocode
