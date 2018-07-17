@@ -1,11 +1,10 @@
-const CosmosDbHelper = require("./cosmosdb-helper");
+const CosmosDbAccessor = require("./cosmosdb-accessor");
 const escapeString = require('sql-escape-string');
 
 
 class PropertiesStorage {
     constructor() {
-        this.helper = new CosmosDbHelper();
-        
+        this.cosmosDbAccessor = new CosmosDbAccessor();
     }
 
     async getLastValue(deviceId, propertyName) {
@@ -14,7 +13,7 @@ class PropertiesStorage {
         ORDER BY c.Timestamp DESC`
         // if (!this.checkQuery(query))
         //     throw "Possible SQL injection, request will not be handled.";
-        var result = await this.helper.queryCollection(query);
+        var result = await this.cosmosDbAccessor.queryCollection(query);
 
         if (result.length != 0)
             return result[0].PropertyValue;
@@ -36,7 +35,7 @@ class PropertiesStorage {
         // if (!this.checkQuery(query))
         //     throw "Possible SQL injection, request will not be handled.";
 
-        var result = await this.helper.queryCollection(query);
+        var result = await this.cosmosDbAccessor.queryCollection(query);
 
         return result;
     }

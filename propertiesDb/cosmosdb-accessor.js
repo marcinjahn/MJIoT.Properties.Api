@@ -1,11 +1,11 @@
 let DocumentDBClient = require('documentdb').DocumentClient;
 const uriFactory = require('documentdb').UriFactory;
 
-class CosmosDbHelper {
+class CosmosDbAccessor {
     constructor() {
-        this.documentDbClient = new DocumentDBClient(process.env.HOST, { masterKey: process.env.AUTH_KEY });
-        this.databaseId = process.env.DATABASE_ID;
-        this.collectionId = process.env.COLLECTION_ID;
+        this.documentDbClient = new DocumentDBClient(process.env.MJIOT_PROPERTIESDB_HOST, { masterKey: process.env.MJIOT_PROPERTIESDB_AUTH_KEY });
+        this.databaseId = process.env.MJIOT_PROPERTIESDB_DATABASE_ID;
+        this.collectionId = process.env.MJIOT_PROPERTIESDB_COLLECTION_ID;
     }
 
     // async init() {
@@ -158,4 +158,4 @@ class CosmosDbHelper {
     }
 }
 
-module.exports = CosmosDbHelper;
+module.exports = CosmosDbAccessor;

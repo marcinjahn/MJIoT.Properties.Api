@@ -1,13 +1,15 @@
 const express = require('express');
-const PropertiesStorage = require('./db/properties-storage');
+const PropertiesStorage = require('./propertiesDb/properties-storage');
 const AuthHandler = require('./auth/auth-handler');
 const bearerToken = require('express-bearer-token');
+const ModelsStorage = require("./modelsDb/models-storage");
 
 
 class Server {
     constructor() {
-        this.storage = new PropertiesStorage();
         this.authHandler = new AuthHandler();
+        this.storage = new PropertiesStorage();
+        this.modelsStorage = new ModelsStorage();
 
         this.app = express();
         this.portNumber = 3000;
@@ -25,6 +27,7 @@ class Server {
     setup() {
         //AUTHENTICATION
         this.app.use(bearerToken());
+
         this.app.use(async (req, res, next) => {
             let isTokenValid = await this.authHandler.verifyToken(req.token);
             if (!isTokenValid)
@@ -32,9 +35,17 @@ class Server {
             next();
         });
 
+
+
         //GET REQUESTS
         this.app.get("/api/:deviceId/:propertyName", async (req, res) => {
             let deviceId = req.params.deviceId;
+
+            if (!(await this.isItUsersDevice(this.authHandler.getUserId(), deviceId))) {
+                res.status(400).send("You are not authorized to access requested data.");
+                return;
+            }
+
             let propertyName = req.params.propertyName;
 
             let data;
@@ -49,9 +60,17 @@ class Server {
                 res.send(data);
             }
             catch(e) {
-                res.status(400).send("Request could not be handled.")
+                res.status(400).send("Request could not be handled.");
             }
         });
+    }
+
+    async isItUsersDevice(userId, deviceId) {
+        var realUserId = await this.modelsStorage.getUserIdOfDevice(deviceId);
+        if (userId == realUserId)
+            return true;
+        else
+            return false;
     }
 }
 
