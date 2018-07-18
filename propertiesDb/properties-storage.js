@@ -8,7 +8,7 @@ class PropertiesStorage {
     }
 
     async getLastValue(deviceId, propertyName) {
-        let query = `SELECT TOP 1 c.PropertyValue FROM c  
+        let query = `SELECT TOP 1 c.PropertyValue, c.Timestamp FROM c  
         WHERE c.DeviceId=${deviceId} AND c.PropertyName="${propertyName}"
         ORDER BY c.Timestamp DESC`
         // if (!this.checkQuery(query))
@@ -16,7 +16,7 @@ class PropertiesStorage {
         var result = await this.cosmosDbAccessor.queryCollection(query);
 
         if (result.length != 0)
-            return result[0].PropertyValue;
+            return result[0];
         else
             return null;
     }

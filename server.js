@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const PropertiesStorage = require('./propertiesDb/properties-storage');
 const AuthHandler = require('./auth/auth-handler');
 const bearerToken = require('express-bearer-token');
@@ -25,6 +26,13 @@ class Server {
     }
 
     setup() {
+        //CORS
+        var corsOptions = {
+            origin: '*',
+            optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
+        };
+        this.app.use(cors(corsOptions))
+
         //AUTHENTICATION
         this.app.use(bearerToken());
 
@@ -34,8 +42,6 @@ class Server {
                 res.status(401).send("The request's token is not correct. Request dropped.");
             next();
         });
-
-
 
         //GET REQUESTS
         this.app.get("/api/:deviceId/:propertyName", async (req, res) => {
