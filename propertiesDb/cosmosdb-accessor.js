@@ -136,7 +136,6 @@ class CosmosDbAccessor {
                     for (var queryResult of results) {
                         let resultString = JSON.stringify(queryResult);
                     }
-                    console.log();
                     resolve(results);
                 }
             });

@@ -3,7 +3,6 @@ const ModelsSqlAccessor = require('./models-sql-accessor');
 class ModelsStorage {
     constructor() {
         this.modelsSqlAccessor = new ModelsSqlAccessor();
-        // this.modelsSqlAccessor.executeQuery("");
     }
 
     async getUserIdOfDevice(deviceId) {

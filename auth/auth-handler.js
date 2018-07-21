@@ -12,7 +12,6 @@ class AuthHandler {
         let self = this;
         return new Promise (function(resolve, reject) {
             jwt.verify(token, cert, { algorithms: ['RS256'], ignoreExpiration: true }, function(err, decoded) {
-                // console.log(decoded);
                 if (decoded !== undefined) {
                     self.userId = decoded.sub;
                     resolve(true);
